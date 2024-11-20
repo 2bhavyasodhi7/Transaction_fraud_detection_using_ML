@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Detection on Bank Payments</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Fraud Detection on Bank Payments Using Machine Learning</h1>
+        <p>Python Final Year IEEE Project</p>
+
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <h2>Upload Your CSV File</h2>
+            <form method="POST" action="/upload" enctype="multipart/form-data">
+                <label for="file-input">Browse...</label>
+                <input type="file" id="file-input" name="file" required>
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+
+        <!-- Preview Section (only shown after file is uploaded) -->
+        {% if uploaded %}
+        <div class="preview-section">
+            <h2>Prediction Options</h2>
+            <p>Choose your prediction mode:</p>
+            <form method="POST" action="/predict">
+                <button type="submit" name="mode" value="single">Predict for a Single Transaction</button>
+                <button type="submit" name="mode" value="whole">Predict for the Entire Dataset</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Display Prediction Results for a Single Transaction -->
+        {% if single_prediction %}
+        <div class="result-section">
+            <h2>Prediction for Single Transaction</h2>
+            <p>
+                <strong>
+                    {% if single_prediction == 'Fraudulent' %}
+                        Fraudulent
+                    {% else %}
+                        Not Fraudulent
+                    {% endif %}
+                </strong>
+            </p>
+        </div>
+        {% endif %}
+
+        <!-- Display Prediction Results for Entire Dataset -->
+        {% if prediction_table %}
+        <div class="result-section">
+            <h2>Prediction Results for Entire Dataset</h2>
+            <div>{{ prediction_table|safe }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Footer Section -->
+        <div class="footer">
+            <p>For more information, visit <a href="http://www.jpinfotech.org" target="_blank">www.jpinfotech.org</a></p>
+        </div>
+    </div>
+</body>
+</html>

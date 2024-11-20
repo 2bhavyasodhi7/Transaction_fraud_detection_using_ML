@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fraud Detection</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <h1>Fraud Detection</h1>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <!-- Upload Section -->
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <label for="file">Upload CSV File:</label>
+        <input type="file" name="file" id="file">
+        <button type="submit">Upload</button>
+    </form>
+
+    {% if uploaded %}
+        <h2>Select Prediction Mode</h2>
+        <form id="mode-selection-form">
+            <label>
+                <input type="radio" name="mode" value="single" onchange="showForm('single')" required>
+                Single Transaction
+            </label>
+            <label>
+                <input type="radio" name="mode" value="whole" onchange="showForm('whole')" required>
+                Full Dataset
+            </label>
+        </form>
+
+        <!-- Form for Single Transaction -->
+        <div id="single-form" style="display: none;">
+            <h3>Single Transaction Prediction</h3>
+            <form action="/predict" method="post">
+                <input type="hidden" name="mode" value="single">
+                <label for="step">Step:</label>
+                <input type="number" name="step" id="step" required><br>
+
+                <label for="amount">Amount:</label>
+                <input type="number" step="0.01" name="amount" id="amount" required><br>
+
+                <label for="oldbalanceOrg">Old Balance Origin:</label>
+                <input type="number" step="0.01" name="oldbalanceOrg" id="oldbalanceOrg" required><br>
+
+                <label for="newbalanceOrg">New Balance Origin:</label>
+                <input type="number" step="0.01" name="newbalanceOrg" id="newbalanceOrg" required><br>
+
+                <label for="oldbalanceDest">Old Balance Destination:</label>
+                <input type="number" step="0.01" name="oldbalanceDest" id="oldbalanceDest" required><br>
+
+                <label for="newbalanceDest">New Balance Destination:</label>
+                <input type="number" step="0.01" name="newbalanceDest" id="newbalanceDest" required><br>
+
+                <label for="type_CASH_OUT">Type (CASH OUT):</label>
+                <input type="number" name="type_CASH_OUT" id="type_CASH_OUT" value="0" required><br>
+
+                <label for="type_DEBIT">Type (DEBIT):</label>
+                <input type="number" name="type_DEBIT" id="type_DEBIT" value="0" required><br>
+
+                <label for="type_PAYMENT">Type (PAYMENT):</label>
+                <input type="number" name="type_PAYMENT" id="type_PAYMENT" value="0" required><br>
+
+                <label for="type_TRANSFER">Type (TRANSFER):</label>
+                <input type="number" name="type_TRANSFER" id="type_TRANSFER" value="0" required><br>
+
+                <button type="submit">Predict Single Transaction</button>
+            </form>
+        </div>
+
+        <!-- Form for Full Dataset -->
+        <div id="whole-form" style="display: none;">
+            <h3>Full Dataset Prediction</h3>
+            <form action="/predict" method="post">
+                <input type="hidden" name="mode" value="whole">
+                <button type="submit">Predict Entire Dataset</button>
+            </form>
+        </div>
+    {% endif %}
+
+    {% if single_prediction %}
+        <h2>Prediction Result</h2>
+        <p>The transaction is: <strong>{{ single_prediction }}</strong></p>
+    {% endif %}
+
+    {% if prediction_table %}
+        <h2>Full Dataset Prediction Results</h2>
+        {{ prediction_table|safe }}
+    {% endif %}
+
+    <script>
+        function showForm(mode) {
+            // Hide both forms initially
+            document.getElementById('single-form').style.display = 'none';
+            document.getElementById('whole-form').style.display = 'none';
+
+            // Show the selected form
+            if (mode === 'single') {
+                document.getElementById('single-form').style.display = 'block';
+            } else if (mode === 'whole') {
+                document.getElementById('whole-form').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
